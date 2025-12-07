@@ -281,10 +281,6 @@ while True:
     # evaluate the loss on train/val sets and write checkpoints
     if iter_num % eval_interval == 0 and master_process:
         losses = estimate_loss()
-        print(f"iter {iter_num}: train loss {losses['train']:.4f}, train_bpc {losses['train']/math.log(2):.4f}, val_bpc {losses['val']/math.log(2):.4f}")
-
-        # evaluate the loss on train/val sets and write checkpoints
-        losses = estimate_loss()
         train_loss = losses['train']
         val_loss = losses['val']
         train_bpc = train_loss / math.log(2)
@@ -294,7 +290,7 @@ while True:
         # Log to CSV
         with open(log_file, 'a', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([iter_num, train_loss, train_bpc, val_loss, val_bpc, lr, 0])  # 0 for elapsed_time since we don't have it here
+            writer.writerow([iter_num, train_loss, train_bpc, val_loss, val_bpc, lr, 0])
         
         if wandb_log:
             wandb.log({
@@ -370,3 +366,4 @@ while True:
 
 if ddp:
     destroy_process_group()
+
